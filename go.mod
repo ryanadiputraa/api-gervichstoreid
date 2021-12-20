@@ -3,9 +3,12 @@ module gitlab.com/ryanadiputraa/api-gervichstore.id
 go 1.17
 
 require (
+	github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
+	github.com/gocraft/dbr/v2 v2.7.2
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
+	github.com/lib/pq v1.10.4
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mitchellh/mapstructure v1.4.2 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect

@@ -8,12 +8,23 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
+	"github.com/gocraft/dbr/v2"
 	"github.com/gorilla/mux"
+	"github.com/spf13/viper"
+	dbUtil "gitlab.com/ryanadiputraa/api-gervichstore.id/pkg/database"
 )
 
 func serveHTTP() {
 	ctx := context.Background()
+	readConnection, writeConnection := initDatabase(ctx)
+
+	sessionRead := readConnection.NewSession(nil)
+	sessionRead.Timeout = 10 * time.Second
+
+	sessionWrite := writeConnection.NewSession(nil)
+	sessionWrite.Timeout = 10 * time.Second
 
 	router := mux.NewRouter().StrictSlash(false)
 
@@ -41,6 +52,47 @@ func serveHTTP() {
 }
 
 func port() string {
-	port := "8080"
+	port := viper.GetString("PORT")
+	if len(port) == 0 {
+		port = ":8080"
+	}
 	return fmt.Sprintf(":%s", port)
+}
+
+func initDatabase(ctx context.Context) (read, write *dbr.Connection) {
+	read, err := dbUtil.CreateConnection(
+		viper.GetString("database.driver"),
+		viper.GetString("database.read"),
+		viper.GetInt("database.max_conns"),
+		viper.GetInt("database.max_idle"),
+	)
+	if err != nil {
+		log.Printf("CREATE database connection READ: %s", err.Error())
+		os.Exit(3)
+	}
+
+	err = read.PingContext(ctx)
+	if err != nil {
+		log.Printf("PING database connection READ: %s", err.Error())
+		os.Exit(2)
+	}
+
+	write, err = dbUtil.CreateConnection(
+		viper.GetString("database.driver"),
+		viper.GetString("database.read"),
+		viper.GetInt("database.max_conns"),
+		viper.GetInt("database.max_idle"),
+	)
+	if err != nil {
+		log.Printf("CREATE database connection WRITE: %s", err.Error())
+		os.Exit(1)
+	}
+
+	err = write.PingContext(ctx)
+	if err != nil {
+		log.Printf("PING database connection WRITE: %s", err.Error())
+		os.Exit(2)
+	}
+
+	return
 }

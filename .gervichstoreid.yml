@@ -1,0 +1,7 @@
+database:
+  driver: "postgres"
+  max_conns: 100
+  max_idle: 4
+  read: ""
+  write: ""
+PORT: 8080
