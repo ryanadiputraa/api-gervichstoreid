@@ -12,6 +12,7 @@ import (
 
 	"github.com/gocraft/dbr/v2"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"github.com/spf13/viper"
 	dbUtil "gitlab.com/ryanadiputraa/api-gervichstore.id/pkg/database"
 )
@@ -27,10 +28,22 @@ func serveHTTP() {
 	sessionWrite.Timeout = 10 * time.Second
 
 	router := mux.NewRouter().StrictSlash(false)
+	router.Use(Recovery)
+
+	// v1 := router.PathPrefix("/v1").Subrouter()
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"x"},
+		AllowedHeaders:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		Debug:            true,
+		AllowCredentials: true,
+	})
+	c.Handler(CorsMiddleware())
+	handler := c.Handler(router)
 
 	srv := &http.Server{
 		Addr:    port(),
-		Handler: router,
+		Handler: handler,
 	}
 
 	done := make(chan os.Signal, 1)
