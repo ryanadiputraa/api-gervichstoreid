@@ -6,8 +6,8 @@ import (
 
 	"github.com/afex/hystrix-go/hystrix"
 	"github.com/gocraft/dbr/v2"
-	"gitlab.com/ryanadiputraa/api-gervichstore.id/domain"
-	"gitlab.com/ryanadiputraa/api-gervichstore.id/pkg/wrapper"
+	"github.com/ryanadiputraa/api-gervichstore.id/domain"
+	"github.com/ryanadiputraa/api-gervichstore.id/pkg/wrapper"
 )
 
 type ProductRepository struct {
@@ -42,6 +42,10 @@ func (r *ProductRepository) Fetch(ctx context.Context, readSession *dbr.Session,
 			Message:  wrapper.InternalServerErrorLabel,
 			Cause:    errHystrix.Error(),
 		}
+	}
+
+	if products == nil {
+		products = make([]domain.Product, 0)
 	}
 
 	return

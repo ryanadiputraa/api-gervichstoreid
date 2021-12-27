@@ -34,10 +34,10 @@ func GetStructTagList(data interface{}, tag string) (fields []string) {
 	}
 
 	if val.Kind() != reflect.Struct {
-		panic("passed interface param must be struct or pointer to a struct")
+		panic("passed interface params must be struct or pointer to a struct")
 	}
 
-	for i := 0; i <= val.NumField(); i++ {
+	for i := 0; i < val.NumField(); i++ {
 		_type := val.Type().Field(i)
 
 		if _tag := _type.Tag.Get(tag); _tag != "" && _tag != "-" {

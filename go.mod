@@ -1,4 +1,4 @@
-module gitlab.com/ryanadiputraa/api-gervichstore.id
+module github.com/ryanadiputraa/api-gervichstore.id
 
 go 1.17
 

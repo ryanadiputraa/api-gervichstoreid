@@ -21,7 +21,7 @@ func Recovery(next http.Handler) http.Handler {
 			err := recover()
 			if err != nil {
 				debug.PrintStack()
-				logging.Error("Panic errpr: %s", err)
+				logging.Error("Panic error: ", err)
 				return
 			}
 		}()

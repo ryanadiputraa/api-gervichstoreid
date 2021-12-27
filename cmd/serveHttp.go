@@ -13,8 +13,12 @@ import (
 	"github.com/gocraft/dbr/v2"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	dbUtil "github.com/ryanadiputraa/api-gervichstore.id/pkg/database"
 	"github.com/spf13/viper"
-	dbUtil "gitlab.com/ryanadiputraa/api-gervichstore.id/pkg/database"
+
+	_productHandler "github.com/ryanadiputraa/api-gervichstore.id/app/product/delivery/http"
+	_productRepository "github.com/ryanadiputraa/api-gervichstore.id/app/product/repository/psql"
+	_productUsecase "github.com/ryanadiputraa/api-gervichstore.id/app/product/usecase"
 )
 
 func serveHTTP() {
@@ -23,16 +27,15 @@ func serveHTTP() {
 
 	sessionRead := readConnection.NewSession(nil)
 	sessionRead.Timeout = 10 * time.Second
-
 	sessionWrite := writeConnection.NewSession(nil)
 	sessionWrite.Timeout = 10 * time.Second
 
 	router := mux.NewRouter().StrictSlash(false)
 	router.Use(Recovery)
 
-	// v1 := router.PathPrefix("/v1").Subrouter()
+	v1 := router.PathPrefix("/v1").Subrouter()
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"x"},
+		AllowedOrigins:   []string{"*"},
 		AllowedHeaders:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		Debug:            true,
@@ -40,6 +43,10 @@ func serveHTTP() {
 	})
 	c.Handler(CorsMiddleware())
 	handler := c.Handler(router)
+
+	productRepository := _productRepository.NewProductRepository(sessionRead, sessionWrite)
+	productUsecase := _productUsecase.NewProductUseCase(sessionRead, sessionWrite, productRepository)
+	_productHandler.NewProductHandler(v1, productUsecase)
 
 	srv := &http.Server{
 		Addr:    port(),
