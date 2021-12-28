@@ -1,4 +1,4 @@
-# CHANGE FILENAME : remove .example into project.yml
+# CHANGE FILENAME : remove .example into projectname.yml
 
 # CHANGE THIS
 database:
@@ -7,4 +7,11 @@ database:
   max_idle: 4
   read: "host=0.0.0.0 user=USER password=PASSWORD dbname=DB sslmode=disable"
   write: "host=0.0.0.0 user=USER password=PASSWORD dbname=DB sslmode=disable"
+jwt:
+  expires:
+    access: 3600
+    refresh: 604800
+  secret:
+    access: "" # random string
+    refresh: "" # random string
 PORT: 8080

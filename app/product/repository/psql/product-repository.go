@@ -54,7 +54,7 @@ func (r *ProductRepository) Fetch(ctx context.Context, readSession *dbr.Session,
 func (r *ProductRepository) Query(ctx context.Context, readSession *dbr.Session, conditions map[string]interface{}) (product *domain.Product, err error) {
 	tagList := wrapper.GetStructTagList(domain.Product{}, "db")
 	errHystrix := hystrix.Do("SimpleQuery", func() error {
-		db := dbr.Select(tagList).From("products")
+		db := readSession.Select(tagList...).From("products")
 
 		for k, v := range conditions {
 			db.Where(dbr.Eq(k, v))
@@ -71,6 +71,14 @@ func (r *ProductRepository) Query(ctx context.Context, readSession *dbr.Session,
 			Code:     5500,
 			Message:  wrapper.InternalServerErrorLabel,
 			Cause:    errHystrix.Error(),
+		}
+	}
+
+	if product == nil {
+		return product, &wrapper.GenericError{
+			HTTPCode: http.StatusNotFound,
+			Code:     4404,
+			Message:  "No product found",
 		}
 	}
 

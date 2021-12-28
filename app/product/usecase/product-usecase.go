@@ -27,24 +27,19 @@ func (u *ProductUsecase) GetProducts(ctx context.Context) (products []domain.Pro
 	fetchConditions := make(map[string]interface{})
 	products, err = u.productRepository.Fetch(ctx, u.readSession, fetchConditions)
 	if err != nil {
-		logging.Error("Fail to get all products: %s", err.Error())
+		logging.Error("Fail to get all products: ", err.Error())
 		return
 	}
 	return
 }
 
-func (u *ProductUsecase) GetProductByID(ctx context.Context, productID int) (product domain.Product, err error) {
+func (u *ProductUsecase) GetProductByID(ctx context.Context, productID string) (product domain.Product, err error) {
 	fetchConditions := map[string]interface{}{
 		"id": productID,
 	}
 	productS, err := u.productRepository.Query(ctx, u.readSession, fetchConditions)
 	if err != nil {
-		logging.Error("Fail to get product by id: %s", err.Error())
-		return
-	}
-
-	if productS == nil {
-		logging.Error("product with ID of '%s' not found", productID)
+		logging.Error("Fail to get product by id: ", productID)
 		return
 	}
 

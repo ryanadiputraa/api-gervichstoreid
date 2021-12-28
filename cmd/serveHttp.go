@@ -48,7 +48,7 @@ func serveHTTP() {
 
 	productRepository := _productRepository.NewProductRepository(sessionRead, sessionWrite)
 	productUsecase := _productUsecase.NewProductUseCase(sessionRead, sessionWrite, productRepository)
-	_productHandler.NewProductHandler(v1, productUsecase)
+	_productHandler.NewProductHandler(v1, auth, productUsecase)
 
 	srv := &http.Server{
 		Addr:    port(),

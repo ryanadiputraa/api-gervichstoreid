@@ -9,7 +9,7 @@ import (
 
 type IProductUsecase interface {
 	GetProducts(ctx context.Context) ([]Product, error)
-	GetProductByID(ctx context.Context, productID int) (Product, error)
+	GetProductByID(ctx context.Context, productID string) (Product, error)
 }
 
 type IProductRepository interface {
