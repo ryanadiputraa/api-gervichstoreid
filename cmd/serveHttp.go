@@ -34,6 +34,8 @@ func serveHTTP() {
 	router.Use(Recovery)
 
 	v1 := router.PathPrefix("/v1").Subrouter()
+	auth := router.PathPrefix("/v1").Subrouter()
+	auth.Use(JWTMiddleware)
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedHeaders:   []string{"*"},
