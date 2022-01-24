@@ -15,8 +15,8 @@ type ProductHandler struct {
 func NewProductHandler(router, authRouter *mux.Router, productUsecase domain.IProductUsecase) {
 	handler := &ProductHandler{productUsecase: productUsecase}
 
-	router.HandleFunc("/api/products", handler.GetProducts).Methods(http.MethodGet)
-	router.HandleFunc("/api/products/{id}", handler.GetProductByID).Methods(http.MethodGet)
+	router.HandleFunc("/products", handler.GetProducts).Methods(http.MethodGet)
+	router.HandleFunc("/products/{id}", handler.GetProductByID).Methods(http.MethodGet)
 }
 
 func (h *ProductHandler) GetProducts(rw http.ResponseWriter, r *http.Request) {

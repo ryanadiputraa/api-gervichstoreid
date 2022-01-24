@@ -38,7 +38,7 @@ func (r *ProductRepository) Fetch(ctx context.Context, readSession *dbr.Session,
 	if errHystrix != nil {
 		return products, &wrapper.GenericError{
 			HTTPCode: http.StatusInternalServerError,
-			Code:     5500,
+			Code:     500,
 			Message:  wrapper.InternalServerErrorLabel,
 			Cause:    errHystrix.Error(),
 		}
@@ -68,7 +68,7 @@ func (r *ProductRepository) Query(ctx context.Context, readSession *dbr.Session,
 	if errHystrix != nil {
 		return product, &wrapper.GenericError{
 			HTTPCode: http.StatusInternalServerError,
-			Code:     5500,
+			Code:     500,
 			Message:  wrapper.InternalServerErrorLabel,
 			Cause:    errHystrix.Error(),
 		}
@@ -77,7 +77,7 @@ func (r *ProductRepository) Query(ctx context.Context, readSession *dbr.Session,
 	if product == nil {
 		return product, &wrapper.GenericError{
 			HTTPCode: http.StatusNotFound,
-			Code:     4404,
+			Code:     404,
 			Message:  "No product found",
 		}
 	}

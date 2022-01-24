@@ -33,9 +33,9 @@ func serveHTTP() {
 	router := mux.NewRouter().StrictSlash(false)
 	router.Use(Recovery)
 
-	v1 := router.PathPrefix("/v1").Subrouter()
-	auth := router.PathPrefix("/v1").Subrouter()
-	auth.Use(JWTMiddleware)
+	API := router.PathPrefix("/api/v1").Subrouter()
+	authAPI := router.PathPrefix("/api/v1").Subrouter()
+	authAPI.Use(JWTMiddleware)
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedHeaders:   []string{"*"},
@@ -48,7 +48,7 @@ func serveHTTP() {
 
 	productRepository := _productRepository.NewProductRepository(sessionRead, sessionWrite)
 	productUsecase := _productUsecase.NewProductUseCase(sessionRead, sessionWrite, productRepository)
-	_productHandler.NewProductHandler(v1, auth, productUsecase)
+	_productHandler.NewProductHandler(API, authAPI, productUsecase)
 
 	srv := &http.Server{
 		Addr:    port(),

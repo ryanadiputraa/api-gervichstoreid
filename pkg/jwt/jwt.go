@@ -15,7 +15,7 @@ func GenerateTokenWithClaims(claims *domain.Claims, secret []byte) (token string
 	if err != nil {
 		return token, &wrapper.GenericError{
 			HTTPCode: http.StatusInternalServerError,
-			Code:     5500,
+			Code:     500,
 			Message:  "Fail to generate token",
 			Cause:    err.Error(),
 		}
@@ -32,7 +32,7 @@ func ParseTokenWithClaims(tokenString string, claims *domain.Claims, secret []by
 		if err == jwt.ErrSignatureInvalid {
 			return &wrapper.GenericError{
 				HTTPCode: http.StatusUnauthorized,
-				Code:     4403,
+				Code:     403,
 				Message:  "Invalid signature",
 				Cause:    err.Error(),
 			}
@@ -42,7 +42,7 @@ func ParseTokenWithClaims(tokenString string, claims *domain.Claims, secret []by
 	if !token.Valid {
 		return &wrapper.GenericError{
 			HTTPCode: http.StatusUnauthorized,
-			Code:     4403,
+			Code:     403,
 			Message:  "Invalid token",
 		}
 	}
@@ -54,7 +54,7 @@ func ExtractTokenFromAuthorizationHeader(headers http.Header) (token string, err
 	if !ok {
 		return token, &wrapper.GenericError{
 			HTTPCode: http.StatusUnauthorized,
-			Code:     4403,
+			Code:     403,
 			Message:  "Unable to parse token",
 			Cause:    "Missing authorization header",
 		}
@@ -63,7 +63,7 @@ func ExtractTokenFromAuthorizationHeader(headers http.Header) (token string, err
 	if header[0] == "" {
 		return token, &wrapper.GenericError{
 			HTTPCode: http.StatusUnauthorized,
-			Code:     4403,
+			Code:     403,
 			Message:  "Unable to parse token",
 			Cause:    "Missing bearer token",
 		}
@@ -73,7 +73,7 @@ func ExtractTokenFromAuthorizationHeader(headers http.Header) (token string, err
 	if len(headerValue) < 2 {
 		return "", &wrapper.GenericError{
 			HTTPCode: http.StatusUnauthorized,
-			Code:     4403,
+			Code:     403,
 			Message:  "Unable to parse token",
 			Cause:    "Invalid token format",
 		}

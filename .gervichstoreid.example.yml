@@ -1,6 +1,3 @@
-# CHANGE FILENAME : remove .example into projectname.yml
-
-# CHANGE THIS
 database:
   driver: ""
   max_conns: 100
@@ -12,6 +9,6 @@ jwt:
     access: 3600
     refresh: 604800
   secret:
-    access: "" # random string
-    refresh: "" # random string
+    access: ""
+    refresh: ""
 PORT: 8080
