@@ -2,11 +2,13 @@ package usecase
 
 import (
 	"context"
+	"net/http"
 
 	logging "github.com/sirupsen/logrus"
 
 	"github.com/gocraft/dbr/v2"
 	"github.com/ryanadiputraa/api-gervichstore.id/domain"
+	"github.com/ryanadiputraa/api-gervichstore.id/pkg/wrapper"
 )
 
 type ProductUsecase struct {
@@ -41,6 +43,14 @@ func (u *ProductUsecase) GetProductByID(ctx context.Context, productID string) (
 	if err != nil {
 		logging.Error("Fail to get product by id: ", productID)
 		return
+	}
+
+	if productS == nil {
+		return product, &wrapper.GenericError{
+			HTTPCode: http.StatusNotFound,
+			Code:     404,
+			Message:  wrapper.BadRequestLabel,
+		}
 	}
 
 	product = *productS

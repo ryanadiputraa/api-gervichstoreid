@@ -15,7 +15,6 @@ type IAuthUsecase interface {
 
 type IUserUsecase interface {
 	CreateUser(ctx context.Context, payload UserDTO) error
-	GetUser(ctx context.Context, userID string) (User, error)
 	GetUserData(ctx context.Context, userID string) (UserData, error)
 }
 

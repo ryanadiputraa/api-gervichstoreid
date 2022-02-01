@@ -74,13 +74,5 @@ func (r *ProductRepository) Query(ctx context.Context, readSession *dbr.Session,
 		}
 	}
 
-	if product == nil {
-		return product, &wrapper.GenericError{
-			HTTPCode: http.StatusNotFound,
-			Code:     404,
-			Message:  "No product found",
-		}
-	}
-
 	return
 }
