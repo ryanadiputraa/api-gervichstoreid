@@ -1,21 +1,50 @@
 package domain
 
-import "github.com/dgrijalva/jwt-go"
+import (
+	"context"
 
-// type IAuthUsecase struct {
-// 	Login()
-// }
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gocraft/dbr/v2"
+)
+
+type IAuthUsecase interface {
+	Login(ctx context.Context, payload LoginPayload) (*GenerateTokenResponse, error)
+	Refresh(ctx context.Context, refreshToken string) (*GenerateTokenResponse, error)
+	ChangePassword(ctx context.Context, payload ChangePasswordPayload) error
+}
+
+type IUserUsecase interface {
+	CreateUser(ctx context.Context, payload UserDTO) error
+	GetUser(ctx context.Context, userID string) (User, error)
+	GetUserData(ctx context.Context, userID string) (UserData, error)
+}
+
+type IUserRepository interface {
+	CreateUser(ctx context.Context, tx *dbr.Tx, payload UserDTO) error
+	GetUser(ctx context.Context, readSession *dbr.Session, userID string) (*User, error)
+	GetUserData(ctx context.Context, readSession *dbr.Session, userID string) (*UserData, error)
+}
 
 type User struct {
 	ID       string `json:"id" db:"id"`
 	Fullname string `json:"fullname" db:"fullname"`
+	Email    string `json:"email" db:"email"`
 	Username string `json:"username" db:"username"`
 	Password string `json:"password" db:"password"`
 	Role     string `json:"role" db:"role"`
 }
 
-type UserDetail struct {
+type UserDTO struct {
 	Fullname string `json:"fullname" db:"fullname"`
+	Email    string `json:"email" db:"email"`
+	Username string `json:"username" db:"username"`
+	Password string `json:"password" db:"password"`
+	Role     string `json:"role" db:"role"`
+}
+
+type UserData struct {
+	Fullname string `json:"fullname" db:"fullname"`
+	Email    string `json:"email" db:"email"`
 	Username string `json:"username" db:"username"`
 	Role     string `json:"role" db:"role"`
 }
@@ -26,7 +55,6 @@ type LoginPayload struct {
 }
 
 type ChangePasswordPayload struct {
-	UserID          string `json:"user_id"`
 	CurrentPassword string `json:"current_password"`
 	NewPassword     string `json:"new_password"`
 }
