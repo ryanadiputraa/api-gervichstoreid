@@ -105,7 +105,7 @@ Backend API for GERVICHSTORE.ID website.
 ### Get Product By ID
 
 - Method : `GET`
-- Endpoint : `/api/products/:product_id`
+- Endpoint : `/api/v1/products/:product_id`
 - Header :
   - Content-Type : `application/json`
   - Accept : `application/json`
@@ -130,7 +130,7 @@ Backend API for GERVICHSTORE.ID website.
 ### Create Product
 
 - Method : `POST`
-- Endpoint : `/api/products`
+- Endpoint : `/api/v1/products`
 - Header :
   - Content-Type : `application/json`
   - Accept : `application/json`
@@ -161,7 +161,7 @@ Backend API for GERVICHSTORE.ID website.
 ### Update Product
 
 - Method : `PUT`
-- Endpoint : `/api/products/:product_id`
+- Endpoint : `/api/v1/products/:product_id`
 - Header :
   - Content-Type : `application/json`
   - Accept : `application/json`
@@ -192,7 +192,7 @@ Backend API for GERVICHSTORE.ID website.
 ### Delete Product
 
 - Method : `DELETE`
-- Endpoint : `/api/products/:product_id`
+- Endpoint : `/api/v1/products/:product_id`
 - Header :
   - Content-Type : `application/json`
   - Accept : `application/json`
