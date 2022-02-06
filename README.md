@@ -8,14 +8,13 @@ Backend API for GERVICHSTORE.ID website.
 
 ## Users
 
-### Create User
+### Register
 
 - Method : `POST`
-- Endpoint : `/api/v1/users`
+- Endpoint : `/auth/v1/register`
 - Header :
   - Content-Type : `application/json`
   - Accept : `application/json`
-  - Authorization: `Bearer <access_token>`
 - body :
 
 ```json
@@ -33,7 +32,7 @@ Backend API for GERVICHSTORE.ID website.
 ```json
 {
   "status": "Success",
-  "code": 200,
+  "code": 201,
   "error": "",
   "data": null
 }
