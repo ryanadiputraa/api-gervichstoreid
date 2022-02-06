@@ -22,6 +22,24 @@ func NewProductRepository(read, write *dbr.Session) domain.IProductRepository {
 	}
 }
 
+func (r *ProductRepository) Add(ctx context.Context, tx *dbr.Tx, payload domain.ProductDTO) (err error) {
+	tagList := wrapper.GetStructTagList(domain.ProductDTO{}, "db")
+	errHystrix := hystrix.Do("SimpleQuery", func() error {
+		_, err = tx.InsertInto("products").Columns(tagList...).Record(payload).ExecContext(ctx)
+		return err
+	}, nil)
+
+	if errHystrix != nil {
+		return &wrapper.GenericError{
+			HTTPCode: http.StatusInternalServerError,
+			Code:     500,
+			Message:  wrapper.InternalServerErrorLabel,
+			Cause:    errHystrix.Error(),
+		}
+	}
+	return
+}
+
 func (r *ProductRepository) Fetch(ctx context.Context, readSession *dbr.Session, conditions map[string]interface{}) (products []domain.Product, err error) {
 	tagList := wrapper.GetStructTagList(domain.Product{}, "db")
 	errHystrix := hystrix.Do("SimpleQuery", func() error {

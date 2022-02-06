@@ -31,7 +31,7 @@ Backend API for GERVICHSTORE.ID website.
 
 ```json
 {
-  "status": "Success",
+  "message": "Success",
   "code": 201,
   "error": "",
   "data": null
@@ -50,7 +50,7 @@ Backend API for GERVICHSTORE.ID website.
 
 ```json
 {
-  "status": "Success",
+  "message": "Success",
   "code": 200,
   "error": "",
   "data": {
@@ -77,7 +77,7 @@ Backend API for GERVICHSTORE.ID website.
 
 ```json
 {
-  "status": "Success",
+  "message": "Success",
   "code": 200,
   "error": "",
   "data": [
@@ -112,7 +112,7 @@ Backend API for GERVICHSTORE.ID website.
 
 ```json
 {
-  "status": "Success",
+  "message": "Success",
   "code": 200,
   "error": "",
   "data": {
@@ -126,7 +126,7 @@ Backend API for GERVICHSTORE.ID website.
 }
 ```
 
-### Create Product
+### Add Product
 
 - Method : `POST`
 - Endpoint : `/api/v1/products`
@@ -148,12 +148,10 @@ Backend API for GERVICHSTORE.ID website.
 
 ```json
 {
-  "status": "Success",
+  "message": "Success",
   "code": 201,
   "error": "",
-  "data": {
-    "message": "String"
-  }
+  "data": "nil"
 }
 ```
 
@@ -179,12 +177,10 @@ Backend API for GERVICHSTORE.ID website.
 
 ```json
 {
-  "status": "Success",
+  "message": "Success",
   "code": 200,
   "error": "",
-  "data": {
-    "message": "String"
-  }
+  "data": "nil"
 }
 ```
 
@@ -200,11 +196,9 @@ Backend API for GERVICHSTORE.ID website.
 
 ```json
 {
-  "status": "Success",
+  "message": "Success",
   "code": 200,
   "error": "",
-  "data": {
-    "message": "String"
-  }
+  "data": "nil"
 }
 ```

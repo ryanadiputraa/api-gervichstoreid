@@ -3,11 +3,13 @@ package usecase
 import (
 	"context"
 	"net/http"
+	"time"
 
 	logging "github.com/sirupsen/logrus"
 
 	"github.com/gocraft/dbr/v2"
 	"github.com/ryanadiputraa/api-gervichstore.id/domain"
+	"github.com/ryanadiputraa/api-gervichstore.id/pkg/timeparser"
 	"github.com/ryanadiputraa/api-gervichstore.id/pkg/wrapper"
 )
 
@@ -23,6 +25,24 @@ func NewProductUseCase(read, write *dbr.Session, productRepository domain.IProdu
 		writeSession:      write,
 		productRepository: productRepository,
 	}
+}
+
+func (u *ProductUsecase) AddProduct(ctx context.Context, payload domain.ProductDTO) (err error) {
+	tx, err := u.writeSession.BeginTx(ctx, nil)
+	if err != nil {
+		logging.Error("Fail to begin db transactions: ", err.Error())
+		return
+	}
+	defer tx.RollbackUnlessCommitted()
+
+	payload.CreatedAt = timeparser.ConverTimeToProperFormat(time.Now())
+	err = u.productRepository.Add(ctx, tx, payload)
+	if err != nil {
+		logging.Error("Fail to add product: ", err.Error())
+		return
+	}
+	tx.Commit()
+	return
 }
 
 func (u *ProductUsecase) GetProducts(ctx context.Context) (products []domain.Product, err error) {
