@@ -5,16 +5,17 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gocraft/dbr/v2"
+	"github.com/google/uuid"
 )
 
 type IAuthUsecase interface {
-	Login(ctx context.Context, payload LoginPayload) (*GenerateTokenResponse, error)
-	Refresh(ctx context.Context, refreshToken string) (*GenerateTokenResponse, error)
-	ChangePassword(ctx context.Context, payload ChangePasswordPayload) error
+	Register(ctx context.Context, payload UserDTO) error
+	Login(ctx context.Context, payload LoginDTO) (*TokenResponse, error)
+	Refresh(ctx context.Context, refreshToken string) (*TokenResponse, error)
+	// ChangePassword(ctx context.Context, payload ChangePasswordPayload) error
 }
 
 type IUserUsecase interface {
-	CreateUser(ctx context.Context, payload UserDTO) error
 	GetUserData(ctx context.Context, userID string) (UserData, error)
 }
 
@@ -34,11 +35,12 @@ type User struct {
 }
 
 type UserDTO struct {
-	Fullname string `json:"fullname" db:"fullname"`
-	Email    string `json:"email" db:"email"`
-	Username string `json:"username" db:"username"`
-	Password string `json:"password" db:"password"`
-	Role     string `json:"role" db:"role"`
+	ID       uuid.UUID `json:"id" db:"id"`
+	Fullname string    `json:"fullname" db:"fullname"`
+	Email    string    `json:"email" db:"email"`
+	Username string    `json:"username" db:"username"`
+	Password string    `json:"password" db:"password"`
+	Role     string    `json:"role" db:"role"`
 }
 
 type UserData struct {
@@ -48,7 +50,7 @@ type UserData struct {
 	Role     string `json:"role" db:"role"`
 }
 
-type LoginPayload struct {
+type LoginDTO struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
@@ -63,7 +65,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-type GenerateTokenResponse struct {
+type TokenResponse struct {
 	AccessToken  string `json:"access_token"`
 	ExpiredAt    int64  `json:"expired_at"`
 	RefreshToken string `json:"refresh_token"`

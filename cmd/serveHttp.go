@@ -16,6 +16,11 @@ import (
 	dbUtil "github.com/ryanadiputraa/api-gervichstore.id/pkg/database"
 	"github.com/spf13/viper"
 
+	_userRepository "github.com/ryanadiputraa/api-gervichstore.id/app/user/repository/psql"
+
+	_authHandler "github.com/ryanadiputraa/api-gervichstore.id/app/auth/delivery/http"
+	_authUsecase "github.com/ryanadiputraa/api-gervichstore.id/app/auth/usecase"
+
 	_productHandler "github.com/ryanadiputraa/api-gervichstore.id/app/product/delivery/http"
 	_productRepository "github.com/ryanadiputraa/api-gervichstore.id/app/product/repository/psql"
 	_productUsecase "github.com/ryanadiputraa/api-gervichstore.id/app/product/usecase"
@@ -33,6 +38,7 @@ func serveHTTP() {
 	router := mux.NewRouter().StrictSlash(false)
 	router.Use(Recovery)
 
+	auth := router.PathPrefix("/auth/v1").Subrouter()
 	API := router.PathPrefix("/api/v1").Subrouter()
 	authAPI := router.PathPrefix("/api/v1").Subrouter()
 	authAPI.Use(JWTMiddleware)
@@ -45,6 +51,11 @@ func serveHTTP() {
 	})
 	c.Handler(CorsMiddleware())
 	handler := c.Handler(router)
+
+	userRepository := _userRepository.NewUserRepository(sessionRead, sessionWrite)
+
+	authUsecase := _authUsecase.NewAuthUsecase(sessionRead, sessionWrite, userRepository)
+	_authHandler.NewAuthHandler(auth, authUsecase)
 
 	productRepository := _productRepository.NewProductRepository(sessionRead, sessionWrite)
 	productUsecase := _productUsecase.NewProductUseCase(sessionRead, sessionWrite, productRepository)
