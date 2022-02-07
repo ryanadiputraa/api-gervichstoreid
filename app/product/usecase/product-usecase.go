@@ -76,3 +76,32 @@ func (u *ProductUsecase) GetProductByID(ctx context.Context, productID string) (
 	product = *productS
 	return
 }
+
+func (u *ProductUsecase) UpdateProduct(ctx context.Context, productID string, payload domain.UpdateProductPayload) (err error) {
+	tx, err := u.writeSession.BeginTx(ctx, nil)
+	if err != nil {
+		logging.Error("Fail to begin db transaction: ", err.Error())
+		return
+	}
+	defer tx.RollbackUnlessCommitted()
+
+	queryConditions := map[string]interface{}{
+		"id": productID,
+	}
+
+	updatedTime := timeparser.ConverTimeToProperFormat(time.Now())
+	updatePayload := map[string]interface{}{
+		"product_name": payload.ProductName,
+		"price":        payload.Price,
+		"stock":        payload.Stock,
+		"updated_at":   updatedTime,
+	}
+
+	err = u.productRepository.Update(ctx, tx, queryConditions, updatePayload)
+	if err != nil {
+		logging.Error("Fail to update product: ", err.Error())
+		return
+	}
+	tx.Commit()
+	return
+}

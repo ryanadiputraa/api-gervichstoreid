@@ -94,3 +94,26 @@ func (r *ProductRepository) Query(ctx context.Context, readSession *dbr.Session,
 
 	return
 }
+
+func (r *ProductRepository) Update(ctx context.Context, tx *dbr.Tx, conditions map[string]interface{}, payload map[string]interface{}) (err error) {
+	errHystrix := hystrix.Do("SimpleQuery", func() error {
+		db := tx.Update("products")
+
+		for k, v := range conditions {
+			db.Where(dbr.Eq(k, v))
+		}
+
+		_, err := db.SetMap(payload).ExecContext(ctx)
+		return err
+	}, nil)
+
+	if errHystrix != nil {
+		return &wrapper.GenericError{
+			HTTPCode: http.StatusInternalServerError,
+			Code:     500,
+			Message:  wrapper.InternalServerErrorLabel,
+			Cause:    err.Error(),
+		}
+	}
+	return
+}

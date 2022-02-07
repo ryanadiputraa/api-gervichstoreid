@@ -151,7 +151,7 @@ Backend API for GERVICHSTORE.ID website.
   "message": "Success",
   "code": 201,
   "error": "",
-  "data": "nil"
+  "data": "null"
 }
 ```
 
@@ -180,7 +180,7 @@ Backend API for GERVICHSTORE.ID website.
   "message": "Success",
   "code": 200,
   "error": "",
-  "data": "nil"
+  "data": "null"
 }
 ```
 
@@ -199,6 +199,6 @@ Backend API for GERVICHSTORE.ID website.
   "message": "Success",
   "code": 200,
   "error": "",
-  "data": "nil"
+  "data": "null"
 }
 ```

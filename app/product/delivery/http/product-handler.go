@@ -20,6 +20,7 @@ func NewProductHandler(router, authRouter *mux.Router, productUsecase domain.IPr
 	router.HandleFunc("/products", handler.AddProduct).Methods(http.MethodPost)
 	router.HandleFunc("/products", handler.GetProducts).Methods(http.MethodGet)
 	router.HandleFunc("/products/{id}", handler.GetProductByID).Methods(http.MethodGet)
+	router.HandleFunc("/products/{id}", handler.UpdateProduct).Methods(http.MethodPut)
 }
 
 func (h *ProductHandler) AddProduct(rw http.ResponseWriter, r *http.Request) {
@@ -107,5 +108,49 @@ func (h *ProductHandler) GetProductByID(rw http.ResponseWriter, r *http.Request)
 		Code:    http.StatusOK,
 		Data:    product,
 		Message: wrapper.SuccessLabel,
+	})
+}
+
+func (h *ProductHandler) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	var updatePayload domain.UpdateProductPayload
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		wrapper.WrapResponse(rw, http.StatusBadRequest, &wrapper.Response{
+			Code:    http.StatusBadRequest,
+			Message: wrapper.BadRequestLabel,
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	err = json.Unmarshal(body, &updatePayload)
+	if err != nil {
+		wrapper.WrapResponse(rw, http.StatusBadRequest, &wrapper.Response{
+			Code:    http.StatusBadRequest,
+			Message: wrapper.BadRequestLabel,
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	productID := mux.Vars(r)["id"]
+	err = h.productUsecase.UpdateProduct(ctx, productID, updatePayload)
+	if err != nil {
+		if errVal, ok := err.(*wrapper.GenericError); ok {
+			wrapper.WrapResponse(rw, errVal.HTTPCode, &wrapper.Response{
+				Code:    errVal.Code,
+				Message: errVal.Message,
+				Error:   errVal.Cause,
+			})
+			return
+		}
+	}
+
+	wrapper.WrapResponse(rw, http.StatusOK, &wrapper.Response{
+		Code:    http.StatusOK,
+		Message: wrapper.SuccessLabel,
+		Error:   "",
 	})
 }
